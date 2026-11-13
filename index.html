@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,6 +40,14 @@ body {
 }
 
 .new-chat:hover { background: #333; }
+
+.api-status {
+  color: #888;
+  font-size: 12px;
+  margin-top: 14px;
+  letter-spacing: .2px;
+}
+.api-status.on { color: #10a37f; }
 
 .main {
   flex: 1;
@@ -96,6 +103,50 @@ header {
   align-self: flex-start;
 }
 
+.message a { color: #10a37f; text-decoration: underline; }
+.message strong { font-weight: 700; }
+.message del { color: #999; }
+
+.message pre {
+  background: #1b1b1b;
+  border: 1px solid #3d3d3d;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  overflow-x: auto;
+  white-space: pre;
+  font-size: 13.5px;
+  line-height: 1.5;
+  max-width: 100%;
+}
+
+.message code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: #1b1b1b;
+  border: 1px solid #3d3d3d;
+  border-radius: 6px;
+  padding: 1px 5px;
+  font-size: 13.5px;
+}
+
+.message pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.message ul,
+.message ol { margin: 6px 0; padding-left: 22px; }
+.message li { margin: 2px 0; }
+.message hr { border: 0; border-top: 1px solid #4a4a4a; margin: 12px 0; }
+.message .quote {
+  display: inline-block;
+  border-left: 3px solid #555;
+  padding-left: 10px;
+  color: #bbb;
+}
+
 .input-area {
   padding: 15px 20px 25px;
 }
@@ -111,7 +162,7 @@ header {
   padding: 10px;
 }
 
-input {
+#userInput {
   flex: 1;
   min-width: 0;
   background: transparent;
@@ -119,8 +170,16 @@ input {
   outline: none;
   color: white;
   font-size: 16px;
+  font-family: inherit;
+  line-height: 1.45;
   padding: 10px;
+  resize: none;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
+
+#userInput::placeholder { color: #9a9a9a; }
 
 .send {
   background: #10a37f;
@@ -140,6 +199,110 @@ input {
   margin-top: 12px;
 }
 
+/* ---- API settings modal (same dark theme) ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: #171717;
+  border: 1px solid #3d3d3d;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+}
+
+.modal h2 { margin: 0 0 6px; font-size: 18px; }
+.modal p.hint {
+  color: #888;
+  font-size: 12.5px;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 13px;
+  color: #bbb;
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  background: #303030;
+  border: 1px solid #555;
+  border-radius: 10px;
+  padding: 11px 12px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+.field input:focus { border-color: #10a37f; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  border: 1px solid #555;
+  background: transparent;
+  color: #ddd;
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.chip:hover { background: #333; }
+.chip.active {
+  border-color: #10a37f;
+  color: #10a37f;
+  background: rgba(16, 163, 127, .12);
+}
+
+.settings-status {
+  font-size: 12px;
+  color: #888;
+  min-height: 16px;
+  margin-top: 2px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.settings-status.ok { color: #10a37f; }
+.settings-status.err { color: #ff8a8a; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 1px solid #555;
+  background: transparent;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn:hover { background: #333; }
+.btn.primary { background: #10a37f; border-color: #10a37f; }
+.btn.primary:hover { background: #0d8c6d; }
+.btn.danger { color: #ff8a8a; border-color: #6b3a3a; }
+.btn.danger:hover { background: #3a2222; }
+.btn:disabled { opacity: .55; cursor: default; }
+
 @media(max-width:600px) {
   .sidebar { display: none; }
   #messages { padding: 15px; }
@@ -153,6 +316,8 @@ input {
 <aside class="sidebar">
   <div class="logo">✦ MY AI</div>
   <button class="new-chat" onclick="newChat()">+ New Chat</button>
+  <button class="new-chat" style="margin-top:10px" onclick="openSettings()">⚙ API Settings</button>
+  <p id="apiStatus" class="api-status">● Demo mode</p>
   <p style="color:#888;margin-top:35px">Your AI Assistant</p>
 </aside>
 
@@ -168,10 +333,10 @@ input {
 
   <div class="input-area">
     <div class="input-box">
-      <input id="userInput"
+      <textarea id="userInput" rows="1"
         placeholder="Message MY AI..."
-        onkeydown="if(event.key==='Enter') sendMessage()">
-      <button class="send" onclick="sendMessage()">➤</button>
+        aria-label="Message MY AI"></textarea>
+      <button class="send" onclick="sendMessage()" title="Send (Enter) — press Esc to stop">➤</button>
     </div>
     <div class="footer">
       MY AI can make mistakes. Check important information.
@@ -179,66 +344,829 @@ input {
   </div>
 </main>
 
+<!-- API settings modal -->
+<div class="modal-overlay" id="settingsModal" onclick="if(event.target===this) closeSettings()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <h2 id="settingsTitle">API Settings</h2>
+    <p class="hint">
+      Pick your provider, paste its key, then press <strong>Test</strong> and <strong>Save</strong>.
+      The key never leaves this browser — it's stored only in <code>localStorage</code>.
+    </p>
+
+    <div class="field">
+      <label>Provider</label>
+      <div class="chips" id="providerChips"></div>
+    </div>
+
+    <div class="field">
+      <label for="settingsKey">API Key</label>
+      <input id="settingsKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-...">
+    </div>
+
+    <div class="field">
+      <label for="settingsEndpoint">Endpoint</label>
+      <input id="settingsEndpoint" type="text" spellcheck="false" placeholder="https://api.openai.com/v1/chat/completions">
+    </div>
+
+    <div class="field">
+      <label for="settingsModel">Model</label>
+      <input id="settingsModel" type="text" spellcheck="false" placeholder="gpt-4o-mini">
+    </div>
+
+    <div class="settings-status" id="settingsStatus"></div>
+
+    <div class="modal-actions">
+      <button class="btn danger" onclick="clearApiKey()">Remove key</button>
+      <button class="btn" onclick="closeSettings()">Cancel</button>
+      <button class="btn" id="testBtn" onclick="testConnection()">Test</button>
+      <button class="btn primary" onclick="saveSettingsFromUI()">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const messages = document.getElementById("messages");
-const input = document.getElementById("userInput");
+/* ============================================================
+   MY AI — configuration
+   ------------------------------------------------------------
+   Easiest: click "⚙ API Settings" in the sidebar.
+   The values below are only the defaults.
+   ============================================================ */
+const CONFIG = {
+  apiKey: "",
+  endpoint: "https://api.openai.com/v1/chat/completions",
+  model: "gpt-4o-mini",
+  providerId: "",
+  systemPrompt:
+    "You are MY AI, a friendly and helpful AI assistant. " +
+    "Answer clearly and concisely. Use Markdown when it helps readability.",
+  temperature: 0.7,
+  maxTokens: 1024,
+  stream: true,
+  maxHistory: 24,
+  demoDelay: 14,
+  storageKey: "myai.chat.v1",
+  settingsKey: "myai.settings.v1",
+  requestTimeout: 90000
+};
+
+const DEFAULT_ENDPOINT = CONFIG.endpoint;
+const DEFAULT_MODEL = CONFIG.model;
+
+/* OpenAI-compatible providers — all of these speak the same API shape. */
+const PROVIDERS = [
+  { id: "openai",     name: "OpenAI",
+    endpoint: "https://api.openai.com/v1/chat/completions",
+    model: "gpt-4o-mini",  keyHint: "sk-..." },
+  { id: "gemini",     name: "Google Gemini",
+    endpoint: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+    model: "gemini-2.0-flash", keyHint: "AQ.… or AIza…" },
+  { id: "groq",       name: "Groq",
+    endpoint: "https://api.groq.com/openai/v1/chat/completions",
+    model: "llama-3.3-70b-versatile", keyHint: "gsk_..." },
+  { id: "openrouter", name: "OpenRouter",
+    endpoint: "https://openrouter.ai/api/v1/chat/completions",
+    model: "openai/gpt-4o-mini", keyHint: "sk-or-v1-..." },
+  { id: "mistral",    name: "Mistral",
+    endpoint: "https://api.mistral.ai/v1/chat/completions",
+    model: "mistral-small-latest", keyHint: "..." },
+  { id: "deepseek",   name: "DeepSeek",
+    endpoint: "https://api.deepseek.com/v1/chat/completions",
+    model: "deepseek-chat", keyHint: "sk-..." },
+  { id: "ollama",     name: "Ollama (local)",
+    endpoint: "http://localhost:11434/v1/chat/completions",
+    model: "llama3.2", keyHint: "not required" }
+];
+
+/* ---------------------------- DOM ---------------------------- */
+const messagesEl = document.getElementById("messages");
+const inputEl    = document.getElementById("userInput");
+const sendBtn    = document.querySelector(".send");
+
+/* --------------------------- state --------------------------- */
+const state = {
+  history: [],
+  busy: false,
+  controller: null
+};
+
+let endpointAutoFilled = "";   // last endpoint we filled automatically
+
+/* ------------------------- utilities ------------------------- */
+const abortError = () => new DOMException("Aborted", "AbortError");
+
+function sleep(ms, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal && signal.aborted) return reject(abortError());
+    const onAbort = () => { clearTimeout(timer); reject(abortError()); };
+    const timer = setTimeout(() => {
+      if (signal) signal.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    if (signal) signal.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
+function contentToText(content) {
+  if (typeof content === "string") return content;
+  if (Array.isArray(content)) {
+    return content.map(part => (typeof part === "string" ? part : (part && part.text) || "")).join("");
+  }
+  return "";
+}
+
+function isLocalEndpoint(url) {
+  return /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:\d+)?/i.test(url || "");
+}
+
+function hasApi() {
+  return !!(CONFIG.apiKey || isLocalEndpoint(CONFIG.endpoint));
+}
+
+class HttpError extends Error {
+  constructor(status, body) {
+    super("HTTP " + status);
+    this.name = "HttpError";
+    this.status = status;
+    this.body = body || "";
+  }
+}
+
+/* ---------------------- markdown renderer -------------------- */
+const ESCAPE_MAP = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ESCAPE_MAP[c]);
+
+function renderMarkdown(src) {
+  if (!src) return "";
+
+  let text = escapeHtml(src);
+
+  const codeBlocks = [];
+  text = text.replace(/```([^\n`]*)\n?([\s\S]*?)(?:```|$)/g, (_m, lang, code) => {
+    codeBlocks.push(code.replace(/\n+$/, ""));
+    return "\u0000CB" + (codeBlocks.length - 1) + "\u0000";
+  });
+
+  const inlineCodes = [];
+  text = text.replace(/`([^`\n]+)`/g, (_m, code) => {
+    inlineCodes.push(code);
+    return "\u0000IC" + (inlineCodes.length - 1) + "\u0000";
+  });
+
+  text = text.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/__([^_\n]+)__/g, "<strong>$1</strong>");
+  text = text.replace(/(^|[^\w*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+  text = text.replace(/(^|[^\w_])_([^_\n]+)_/g, "$1<em>$2</em>");
+  text = text.replace(/~~([^~\n]+)~~/g, "<del>$1</del>");
+
+  text = text.replace(
+    /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+  text = text.replace(
+    /(^|[\s(>])(https?:\/\/[^\s<)]+)/g,
+    '$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>'
+  );
+
+  const out = [];
+  let listTag = null;
+
+  const closeList = () => { if (listTag) { out.push("</" + listTag + ">"); listTag = null; } };
+  const openList = (tag) => {
+    if (listTag === tag) return;
+    closeList();
+    listTag = tag;
+    out.push("<" + tag + ">");
+  };
+
+  for (const line of text.split("\n")) {
+    let m;
+
+    if (!line.trim()) { closeList(); out.push("<br>"); continue; }
+
+    if (/^\u0000CB\d+\u0000$/.test(line.trim())) { closeList(); out.push(line.trim()); continue; }
+
+    if ((m = line.match(/^\s{0,3}#{1,6}\s+(.*)$/)))  { closeList(); out.push("<strong>" + m[1] + "</strong><br>"); continue; }
+    if (/^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)) { closeList(); out.push("<hr>"); continue; }
+    if ((m = line.match(/^\s{0,3}>\s?(.*)$/)))       { closeList(); out.push('<span class="quote">' + m[1] + "</span><br>"); continue; }
+    if ((m = line.match(/^\s*[-*+]\s+(.*)$/)))       { openList("ul"); out.push("<li>" + m[1] + "</li>"); continue; }
+    if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/)))     { openList("ol"); out.push("<li>" + m[1] + "</li>"); continue; }
+
+    closeList();
+    out.push(line + "<br>");
+  }
+  closeList();
+
+  let html = out.join("").replace(/(?:<br>\s*)+$/, "");
+
+  html = html.replace(/\u0000CB(\d+)\u0000/g, (_m, i) => "<pre><code>" + codeBlocks[+i] + "</code></pre>");
+  html = html.replace(/\u0000IC(\d+)\u0000/g, (_m, i) => "<code>" + inlineCodes[+i] + "</code>");
+
+  return html;
+}
+
+/* -------------------------- rendering ------------------------ */
+function nearBottom() {
+  return messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 140;
+}
+
+function autoscroll(force) {
+  if (force || nearBottom()) messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function removeWelcome() {
+  const welcome = document.getElementById("welcome");
+  if (welcome) welcome.remove();
+}
 
 function addMessage(text, type) {
+  const stick = nearBottom();
   const div = document.createElement("div");
   div.className = "message " + type;
-  div.textContent = text;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+  div.innerHTML = renderMarkdown(text);
+  messagesEl.appendChild(div);
+  if (stick) autoscroll(true);
   return div;
 }
 
-async function sendMessage() {
-  const text = input.value.trim();
-  if (!text) return;
+function autoResize() {
+  inputEl.style.height = "auto";
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 200) + "px";
+}
 
-  const welcome = document.getElementById("welcome");
-  if (welcome) welcome.remove();
+/* ------------------------- persistence ----------------------- */
+function saveChat() {
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.history)); } catch (_) {}
+}
 
-  addMessage(text, "user");
-  input.value = "";
+function loadChat() {
+  let raw;
+  try { raw = localStorage.getItem(CONFIG.storageKey); } catch (_) { return; }
+  if (!raw) return;
 
-  const loading = addMessage("MY AI is thinking...", "ai");
+  let history;
+  try { history = JSON.parse(raw); } catch (_) { return; }
+  if (!Array.isArray(history) || history.length === 0) return;
 
-  // Demo response. Connect an AI API here for real AI answers.
-  await new Promise(resolve => setTimeout(resolve, 800));
+  state.history = history.filter(
+    (m) => m && typeof m.content === "string" && (m.role === "user" || m.role === "assistant")
+  );
+  if (!state.history.length) return;
 
-  loading.textContent = getDemoResponse(text);
-  messages.scrollTop = messages.scrollHeight;
+  removeWelcome();
+  for (const m of state.history) addMessage(m.content, m.role === "user" ? "user" : "ai");
+  autoscroll(true);
+}
+
+/* -------------------------- settings ------------------------- */
+function loadSettings() {
+  let raw;
+  try { raw = localStorage.getItem(CONFIG.settingsKey); } catch (_) { return; }
+  if (!raw) return;
+
+  let s;
+  try { s = JSON.parse(raw); } catch (_) { return; }
+  if (!s) return;
+
+  if (typeof s.apiKey === "string") CONFIG.apiKey = s.apiKey;
+  if (typeof s.endpoint === "string" && s.endpoint.trim()) CONFIG.endpoint = s.endpoint.trim();
+  if (typeof s.model === "string" && s.model.trim()) CONFIG.model = s.model.trim();
+  if (typeof s.providerId === "string") CONFIG.providerId = s.providerId;
+}
+
+function updateApiStatus() {
+  const el = document.getElementById("apiStatus");
+  if (!el) return;
+
+  if (hasApi()) {
+    const p = PROVIDERS.find(x => x.id === CONFIG.providerId);
+    el.textContent = "● " + (p ? p.name : "API") + " connected";
+    el.classList.add("on");
+  } else {
+    el.textContent = "● Demo mode";
+    el.classList.remove("on");
+  }
+}
+
+/* Guess the provider from the key's prefix. */
+function detectProvider(key) {
+  const k = (key || "").trim();
+  if (!k) return null;
+  if (k.startsWith("sk-ant-"))    return { id: "anthropic" };        // NOT OpenAI-compatible
+  if (k.startsWith("AQ.") || k.startsWith("AIza")) return PROVIDERS.find(p => p.id === "gemini");
+  if (k.startsWith("gsk_"))       return PROVIDERS.find(p => p.id === "groq");
+  if (k.startsWith("sk-or-v1-"))  return PROVIDERS.find(p => p.id === "openrouter");
+  if (k.startsWith("sk-"))        return PROVIDERS.find(p => p.id === "openai");
+  return null;
+}
+
+/* Render the provider chips and highlight the active one. */
+function renderChips() {
+  const wrap = document.getElementById("providerChips");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+
+  for (const p of PROVIDERS) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip" + (p.id === CONFIG.providerId ? " active" : "");
+    btn.textContent = p.name;
+    btn.onclick = () => applyProvider(p);
+    wrap.appendChild(btn);
+  }
+}
+
+function applyProvider(p, silent) {
+  CONFIG.providerId = p.id;
+  document.getElementById("settingsEndpoint").value = p.endpoint;
+  document.getElementById("settingsModel").value = p.model;
+  endpointAutoFilled = p.endpoint;
+
+  const keyInput = document.getElementById("settingsKey");
+  keyInput.placeholder = p.keyHint || "API key";
+
+  renderChips();
+  if (!silent) setStatus("", "");
+}
+
+function setStatus(msg, cls) {
+  const el = document.getElementById("settingsStatus");
+  if (!el) return;
+  el.textContent = msg || "";
+  el.className = "settings-status" + (cls ? " " + cls : "");
+}
+
+function openSettings() {
+  document.getElementById("settingsKey").value = CONFIG.apiKey || "";
+  document.getElementById("settingsEndpoint").value = CONFIG.endpoint || DEFAULT_ENDPOINT;
+  document.getElementById("settingsModel").value = CONFIG.model || DEFAULT_MODEL;
+
+  /* restore the chip if we know the provider, else match by endpoint */
+  if (!CONFIG.providerId) {
+    const match = PROVIDERS.find(p => p.endpoint === CONFIG.endpoint);
+    if (match) CONFIG.providerId = match.id;
+  }
+
+  endpointAutoFilled = "";
+  renderChips();
+  setStatus("", "");
+
+  document.getElementById("settingsModal").classList.add("open");
+  setTimeout(() => document.getElementById("settingsKey").focus(), 50);
+}
+
+function closeSettings() {
+  document.getElementById("settingsModal").classList.remove("open");
+}
+
+function readForm() {
+  const key = document.getElementById("settingsKey").value.trim();
+  const endpoint = (document.getElementById("settingsEndpoint").value.trim() || DEFAULT_ENDPOINT);
+  const model = (document.getElementById("settingsModel").value.trim() || DEFAULT_MODEL);
+  return { key, endpoint, model };
+}
+
+function saveSettingsFromUI() {
+  const { key, endpoint, model } = readForm();
+
+  if (key.startsWith("sk-ant-")) {
+    setStatus(
+      "Anthropic keys are not OpenAI-compatible, so this app can't call them directly. " +
+      "Use OpenRouter (which proxies Claude) or a small local proxy instead.",
+      "err"
+    );
+    return;
+  }
+
+  CONFIG.apiKey = key;
+  CONFIG.endpoint = endpoint;
+  CONFIG.model = model;
+
+  const match = PROVIDERS.find(p => p.endpoint === endpoint);
+  CONFIG.providerId = match ? match.id : "";
+
+  try {
+    if (key || match) {
+      localStorage.setItem(CONFIG.settingsKey, JSON.stringify({
+        apiKey: key, endpoint, model, providerId: CONFIG.providerId
+      }));
+    } else {
+      localStorage.removeItem(CONFIG.settingsKey);
+    }
+  } catch (_) {}
+
+  updateApiStatus();
+  closeSettings();
+}
+
+function clearApiKey() {
+  CONFIG.apiKey = "";
+  CONFIG.providerId = "";
+  try { localStorage.removeItem(CONFIG.settingsKey); } catch (_) {}
+
+  document.getElementById("settingsKey").value = "";
+  document.getElementById("settingsEndpoint").value = CONFIG.endpoint;
+  document.getElementById("settingsModel").value = CONFIG.model;
+  renderChips();
+  setStatus("Key removed — back to demo mode.", "ok");
+  updateApiStatus();
+}
+
+/* ---------------------- test connection ---------------------- */
+async function testConnection() {
+  const { key, endpoint, model } = readForm();
+  const btn = document.getElementById("testBtn");
+
+  if (!key && !isLocalEndpoint(endpoint)) {
+    setStatus("Enter an API key first (local Ollama endpoints don't need one).", "err");
+    return;
+  }
+
+  btn.disabled = true;
+  setStatus("Testing…", "");
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20000);
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + (key || "ollama")
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: "Say OK" }],
+        max_tokens: 8,
+        stream: false
+      }),
+      signal: controller.signal
+    });
+
+    const raw = await res.text();
+
+    if (!res.ok) {
+      setStatus(errorSummary(res.status, raw, endpoint), "err");
+      return;
+    }
+
+    let text = "";
+    try {
+      const data = JSON.parse(raw);
+      text = contentToText(data.choices && data.choices[0] && data.choices[0].message &&
+                           data.choices[0].message.content);
+    } catch (_) {}
+
+    setStatus("Connected ✓  " + endpoint.replace(/^https?:\/\//, "") +
+              (text ? "  —  replied: " + text.slice(0, 40) : ""), "ok");
+  } catch (err) {
+    if (err && err.name === "AbortError") {
+      setStatus("Timed out. Check the endpoint and your network.", "err");
+    } else if (err instanceof TypeError) {
+      setStatus(
+        "Network / CORS error. If this is a local server (e.g. Ollama), start it with CORS allowed:\n" +
+        "OLLAMA_ORIGINS=* ollama serve",
+        "err"
+      );
+    } else {
+      setStatus(String(err && err.message ? err.message : err), "err");
+    }
+  } finally {
+    clearTimeout(timer);
+    btn.disabled = false;
+  }
+}
+
+/* Turn an HTTP failure into something actionable. */
+function errorSummary(status, raw, endpoint) {
+  const body = String(raw || "").trim();
+  let detail = body;
+
+  try {
+    const j = JSON.parse(body);
+    detail = (j.error && (j.error.message || j.error)) || j.message || body;
+    if (typeof detail !== "string") detail = JSON.stringify(detail);
+  } catch (_) {}
+
+  detail = detail.slice(0, 240);
+
+  if (status === 401 || status === 403) {
+    return "Key rejected (HTTP " + status + ").\n" +
+           "The key and the endpoint probably don't match — e.g. a Google/Gemini key sent to OpenAI.\n" +
+           "Pick the right provider above and try again.\n\n" + detail;
+  }
+  if (status === 404) {
+    return "Not found (HTTP 404).\n" +
+           "Usually a wrong model name or wrong endpoint path. Check both.\n\n" + detail;
+  }
+  if (status === 429) {
+    return "Rate limit / quota (HTTP 429).\n" +
+           "You're sending too fast, or the free quota is used up. Wait a moment or check billing.\n\n" + detail;
+  }
+  if (status >= 500) {
+    return "The provider had a server error (HTTP " + status + ").\n" +
+           "Try again in a moment.\n\n" + detail;
+  }
+  return "Request failed (HTTP " + status + ").\n\n" + detail;
+}
+
+/* --------------------------- the API ------------------------- */
+async function streamCompletion(history, onDelta, signal) {
+  const body = {
+    model: CONFIG.model,
+    messages: [
+      { role: "system", content: CONFIG.systemPrompt },
+      ...history.slice(-CONFIG.maxHistory)
+    ],
+    temperature: CONFIG.temperature,
+    max_tokens: CONFIG.maxTokens,
+    stream: CONFIG.stream
+  };
+
+  const response = await fetch(CONFIG.endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + (CONFIG.apiKey || "ollama")
+    },
+    body: JSON.stringify(body),
+    signal
+  });
+
+  if (!response.ok) {
+    let detail = "";
+    try { detail = await response.text(); } catch (_) {}
+    throw new HttpError(response.status, detail);
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+  const canStream = CONFIG.stream && response.body && contentType.includes("event-stream");
+
+  if (!canStream) {
+    const data = await response.json();
+    const text = contentToText(
+      data && data.choices && data.choices[0] &&
+      data.choices[0].message && data.choices[0].message.content
+    );
+    if (text) onDelta(text);
+    return;
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop();
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.charAt(0) === ":") continue;
+      if (!trimmed.startsWith("data:")) continue;
+
+      const payload = trimmed.slice(5).trim();
+      if (payload === "[DONE]") return;
+
+      try {
+        const json = JSON.parse(payload);
+        const choice = json.choices && json.choices[0];
+        const delta = contentToText(
+          choice && (choice.delta ? choice.delta.content
+                                  : choice.message ? choice.message.content
+                                  : "")
+        );
+        if (delta) onDelta(delta);
+      } catch (_) {}
+    }
+  }
+}
+
+/* -------------------------- demo mode ------------------------ */
+async function demoReply(text, onDelta, signal) {
+  const answer = getDemoResponse(text);
+  await sleep(500, signal);
+
+  const STEP = 3;
+  for (let i = 0; i < answer.length; i += STEP) {
+    if (signal.aborted) throw abortError();
+    onDelta(answer.slice(i, i + STEP));
+    await sleep(CONFIG.demoDelay, signal);
+  }
+  return answer;
 }
 
 function getDemoResponse(text) {
   const q = text.toLowerCase();
 
-  if (q.includes("hello") || q.includes("hi"))
+  if (/\b(hello|hi|hey|salam|hola)\b/.test(q))
     return "Hello! 👋 Welcome to MY AI. How can I help you today?";
 
-  if (q.includes("your name"))
-    return "I'm MY AI, your friendly AI assistant! 🤖";
-
-  if (q.includes("who are you"))
-    return "I'm MY AI! I'm a demo chatbot interface. Connect me to an AI API to unlock intelligent conversations.";
+  if (q.includes("your name") || q.includes("who are you"))
+    return "I'm **MY AI**, your friendly AI assistant! 🤖\n\nI'm currently running in *demo mode* — open **⚙ API Settings** to add a key and unlock full conversations.";
 
   if (q.includes("html"))
-    return "HTML is the language used to create web pages. It structures headings, paragraphs, images, buttons and more!";
+    return "**HTML** is the language used to create web pages. It structures headings, paragraphs, images, buttons and more!\n\n```html\n<h1>Hello, world!</h1>\n```";
 
-  if (q.includes("javascript"))
-    return "JavaScript makes websites interactive. It can power chatbots, games, animations and much more!";
+  if (q.includes("javascript") || q.includes("js"))
+    return "**JavaScript** makes websites interactive. It powers chatbots, games, animations and much more!\n\n```js\nconsole.log(\"Hello from MY AI\");\n```";
 
-  return "Thanks for your message! 😊 I'm currently running in demo mode. Connect an AI API to get intelligent answers to any question.";
+  if (q.includes("css"))
+    return "**CSS** controls how a page looks — colours, spacing, layout, animation.\n\n- Selectors\n- Properties\n- Media queries";
+
+  if (q.includes("api") || q.includes("key") || q.includes("401"))
+    return "That **401** usually means the key doesn't match the endpoint.\n\n" +
+           "Your key starts with `AQ.` → that's a **Google Gemini** key, not an OpenAI key.\n\n" +
+           "In **⚙ API Settings**:\n" +
+           "- Provider → **Google Gemini**\n" +
+           "- Endpoint → `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`\n" +
+           "- Model → `gemini-2.0-flash`\n\n" +
+           "Then press **Test**, then **Save**.";
+
+  if (q.includes("thank"))
+    return "You're very welcome! 😊 Anything else I can help with?";
+
+  if (q.includes("help"))
+    return "I can help with lots of things. Try asking:\n\n- *\"What is HTML?\"*\n- *\"Who are you?\"*\n- *\"Why did I get a 401?\"*\n\nOr open **⚙ API Settings** to connect a real AI API.";
+
+  return "Thanks for your message! 😊\n\nI'm currently running in **demo mode**. Click **⚙ API Settings**, pick your provider, paste the key, press **Test**, then **Save** — and I'll be able to answer anything.";
 }
 
+/* ------------------------- sending flow ---------------------- */
+async function sendMessage() {
+  if (state.busy) return;
+
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  removeWelcome();
+
+  addMessage(text, "user");
+  state.history.push({ role: "user", content: text });
+  saveChat();
+
+  inputEl.value = "";
+  autoResize();
+  autoscroll(true);
+
+  const bubble = document.createElement("div");
+  bubble.className = "message ai";
+  bubble.textContent = "MY AI is thinking...";
+  messagesEl.appendChild(bubble);
+  autoscroll(true);
+
+  state.busy = true;
+  state.controller = new AbortController();
+  const signal = state.controller.signal;
+
+  let full = "";
+  const onDelta = (delta) => {
+    full += delta;
+    bubble.innerHTML = renderMarkdown(full);
+    if (nearBottom()) autoscroll(true);
+  };
+
+  const timeout = setTimeout(() => state.controller && state.controller.abort(), CONFIG.requestTimeout);
+
+  try {
+    if (hasApi()) {
+      await streamCompletion(state.history, onDelta, signal);
+    } else {
+      await demoReply(text, onDelta, signal);
+    }
+
+    if (!full.trim()) full = "_(empty response)_";
+    bubble.innerHTML = renderMarkdown(full);
+
+    state.history.push({ role: "assistant", content: full });
+    saveChat();
+  } catch (err) {
+    if (err && err.name === "AbortError") {
+      if (full.trim()) {
+        bubble.innerHTML = renderMarkdown(full + "\n\n_(stopped)_");
+        state.history.push({ role: "assistant", content: full });
+        saveChat();
+      } else {
+        bubble.innerHTML = renderMarkdown("_Generation stopped._");
+      }
+    } else if (err instanceof HttpError) {
+      bubble.innerHTML = renderMarkdown(
+        "**" + errorSummary(err.status, err.body, CONFIG.endpoint).replace(/\n/g, "\n\n") + "**\n\n" +
+        "Open **⚙ API Settings** to fix the key / endpoint / model."
+      );
+    } else if (err instanceof TypeError) {
+      bubble.innerHTML = renderMarkdown(
+        "**Network or CORS error.**\n\n" +
+        "• Check your internet connection.\n" +
+        "• For a local server such as Ollama, allow this page's origin:\n\n" +
+        "```\nOLLAMA_ORIGINS=* ollama serve\n```"
+      );
+    } else {
+      console.error(err);
+      bubble.innerHTML = renderMarkdown(
+        "**Something went wrong.**\n\n" + (err && err.message ? err.message : err)
+      );
+    }
+  } finally {
+    clearTimeout(timeout);
+    state.busy = false;
+    state.controller = null;
+    autoscroll(true);
+    inputEl.focus();
+  }
+}
+
+/* -------------------------- new chat ------------------------- */
 function newChat() {
-  messages.innerHTML = `
-    <div class="welcome" id="welcome">
-      <h1>How can I help you today?</h1>
-      <p>Ask me anything. Let's explore ideas together.</p>
-    </div>`;
+  if (state.controller) state.controller.abort();
+
+  state.history = [];
+  try { localStorage.removeItem(CONFIG.storageKey); } catch (_) {}
+
+  messagesEl.innerHTML =
+    '<div class="welcome" id="welcome">' +
+      '<h1>How can I help you today?</h1>' +
+      "<p>Ask me anything. Let's explore ideas together.</p>" +
+    "</div>";
+
+  inputEl.value = "";
+  autoResize();
+  inputEl.focus();
 }
+
+/* --------------------------- events -------------------------- */
+inputEl.addEventListener("input", autoResize);
+
+inputEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+sendBtn.addEventListener("click", () => {
+  if (state.busy) { if (state.controller) state.controller.abort(); return; }
+  sendMessage();
+});
+
+/* Auto-pick the provider as soon as a recognisable key is pasted. */
+document.getElementById("settingsKey").addEventListener("input", (e) => {
+  const detected = detectProvider(e.target.value);
+  if (!detected) return;
+
+  if (detected.id === "anthropic") {
+    setStatus("That looks like an Anthropic key — not OpenAI-compatible. Use OpenRouter for Claude.", "err");
+    return;
+  }
+
+  const endpointField = document.getElementById("settingsEndpoint");
+  const current = endpointField.value.trim();
+
+  /* only overwrite an endpoint we filled ourselves, or a known provider's */
+  const isKnown = !current || current === endpointAutoFilled ||
+                  PROVIDERS.some(p => p.endpoint === current);
+
+  if (isKnown && detected.endpoint !== current) {
+    applyProvider(detected, true);
+    setStatus("Detected " + detected.name + " — endpoint and model filled in.", "ok");
+  } else {
+    CONFIG.providerId = detected.id;
+    renderChips();
+  }
+});
+
+/* Endpoint edited by hand → drop the auto-fill marker */
+document.getElementById("settingsEndpoint").addEventListener("input", () => {
+  endpointAutoFilled = "";
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const modal = document.getElementById("settingsModal");
+    if (modal && modal.classList.contains("open")) {
+      closeSettings();
+      return;
+    }
+    if (state.busy && state.controller) state.controller.abort();
+  }
+});
+
+window.addEventListener("beforeunload", () => {
+  if (state.controller) state.controller.abort();
+});
+
+/* ---------------------------- init --------------------------- */
+(function init() {
+  loadSettings();
+  updateApiStatus();
+  autoResize();
+  loadChat();
+  inputEl.focus();
+})();
 </script>
 
 </body>
